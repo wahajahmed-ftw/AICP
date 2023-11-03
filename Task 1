@@ -1,0 +1,147 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Product {
+    string ItemCode;
+    string Description;
+    double Price;
+};
+
+void displayProducts(const vector<Product>& products) {
+    cout << "Available products:\n";
+    for (const Product& product : products) {
+        cout << "Item Code: " << product.ItemCode << ", Description: " << product.Description << ", Price: $" << product.Price << endl;
+    }
+}
+
+int main() {
+    vector<Product> cases = {
+        {"A1", "Case", 75.00},
+        {"A2", "Case", 150.00}
+    };
+
+    vector<Product> rams = {
+        {"B1", "RAM", 79.99},
+        {"B2", "RAM", 149.99},
+        {"B3", "RAM", 299.99}
+    };
+
+    vector<Product> hdds = {
+        {"C1", "Main Hard Disk Drive", 49.99},
+        {"C2", "Main Hard Disk Drive", 89.99},
+        {"C3", "Main Hard Disk Drive", 129.99}
+    };
+
+    vector<Product> additionalItems = {
+        {"D1", "Solid State Drive", 59.99},
+        {"D2", "Solid State Drive", 119.99},
+        {"E1", "Second Hard Disk Drive", 49.99},
+        {"E2", "Second Hard Disk Drive", 89.99},
+        {"E3", "Second Hard Disk Drive", 129.99},
+        {"F1", "Optical Drive", 50.00},
+        {"F2", "Optical Drive", 100.00},
+        {"G1", "Operating System", 100.00},
+        {"G2", "Operating System", 175.00}
+    };
+
+    Product chosenCase;
+    Product chosenRAM;
+    Product chosenHDD;
+    double computerPrice = 0.0;
+
+    displayProducts(cases);
+    cout << "Choose one case (enter the Item Code): ";
+    string caseChoice;
+    cin >> caseChoice;
+
+    displayProducts(rams);
+    cout << "Choose one RAM (enter the Item Code): ";
+    string ramChoice;
+    cin >> ramChoice;
+
+    displayProducts(hdds);
+    cout << "Choose one Main Hard Disk Drive (enter the Item Code): ";
+    string hddChoice;
+    cin >> hddChoice;
+
+    for (const Product& product : cases) {
+        if (product.ItemCode == caseChoice) {
+            chosenCase = product;
+            computerPrice += product.Price;
+        }
+    }
+
+    for (const Product& product : rams) {
+        if (product.ItemCode == ramChoice) {
+            chosenRAM = product;
+            computerPrice += product.Price;
+        }
+    }
+
+    for (const Product& product : hdds) {
+        if (product.ItemCode == hddChoice) {
+            chosenHDD = product;
+            computerPrice += product.Price;
+        }
+    }
+
+    cout << "Chosen items:\n";
+    cout << "Case: " << chosenCase.Description << " ($" << chosenCase.Price << ")\n";
+    cout << "RAM: " << chosenRAM.Description << " ($" << chosenRAM.Price << ")\n";
+    cout << "Main Hard Disk Drive: " << chosenHDD.Description << " ($" << chosenHDD.Price << ")\n";
+    cout << "Total Price: $" << computerPrice << endl;
+
+    char purchaseAdditionalItems;
+    cout << "Do you want to purchase additional items? (Y/N): ";
+    cin >> purchaseAdditionalItems;
+
+    if (purchaseAdditionalItems == 'Y' || purchaseAdditionalItems == 'y') {
+        displayProducts(additionalItems);
+        vector<Product> chosenAdditionalItems;
+        char additionalChoice;
+
+        do {
+            cout << "Choose an additional item (enter the Item Code): ";
+            string itemChoice;
+            cin >> itemChoice;
+
+            for (const Product& product : additionalItems) {
+                if (product.ItemCode == itemChoice) {
+                    chosenAdditionalItems.push_back(product);
+                    computerPrice += product.Price;
+                }
+            }
+
+            cout << "Do you want to purchase more additional items? (Y/N): ";
+            cin >> additionalChoice;
+        } while (additionalChoice == 'Y' || additionalChoice == 'y');
+
+        cout << "Chosen additional items:\n";
+        for (const Product& product : chosenAdditionalItems) {
+            cout << product.Description << " ($" << product.Price << ")\n";
+        }
+        cout << "Updated Total Price: $" << computerPrice << endl;
+
+        int numberOfAdditionalItems = chosenAdditionalItems.size();
+        double discount = 0.0;
+
+        if (numberOfAdditionalItems == 1) {
+            discount = 0.05 * computerPrice;
+        }
+        else if (numberOfAdditionalItems >= 2) {
+            discount = 0.10 * computerPrice;
+        }
+
+        if (discount > 0) {
+            cout << "You saved $" << discount << " with the discount.\n";
+            computerPrice -= discount;
+            cout << "New Total Price after Discount: $" << computerPrice << endl;
+        }
+    }
+
+    cout << "Thank you for shopping with us!\n";
+
+    return 0;
+}
