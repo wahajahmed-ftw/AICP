@@ -1,0 +1,104 @@
+#include <iostream>
+using namespace std;
+// Constants
+const int COACH_CAPACITY = 80;
+const int GROUP_DISCOUNT_THRESHOLD = 10;
+const double TICKET_PRICE = 25.0;
+
+// Data structure to store information for each train journey
+struct TrainJourney {
+    int passengers;
+    double revenue;
+};
+
+// Function prototypes
+void initializeDay(TrainJourney journeys[]);
+void purchaseTickets(TrainJourney journeys[]);
+void endOfDayReport(const TrainJourney journeys[]);
+
+int main() {
+    // Array to store information for each train journey
+    TrainJourney journeys[8];
+
+    // Initialize the day
+    initializeDay(journeys);
+
+    // Purchase tickets
+    purchaseTickets(journeys);
+
+    // End of the day report
+    endOfDayReport(journeys);
+
+    return 0;
+}
+
+void initializeDay(TrainJourney journeys[]) {
+    for (int i = 0; i < 8; ++i) {
+        journeys[i].passengers = 0;
+        journeys[i].revenue = 0.0;
+    }
+
+    std::cout << "Electric Mountain Railway - Start of the Day\n\n";
+}
+    int totalPassengers = 0;
+    double totalRevenue = 0.0;
+
+void purchaseTickets(TrainJourney journeys[]) {
+    
+    for (int i = 0; i < 8; ++i) {
+        int numTickets;
+        std::cout << "Enter the number of tickets for the " << (i < 4 ? "up" : "down") << " journey at " << (i % 4 + 9) << ":00: ";
+        std::cin >> numTickets;
+
+        // Validate input
+        while (numTickets < 0 || numTickets > COACH_CAPACITY) {
+            std::cout << "Invalid input. Enter a number between 0 and " << COACH_CAPACITY << ": ";
+            std::cin >> numTickets;
+        }
+
+        // Check if the train is not closed
+        if (journeys[i].passengers + numTickets <= COACH_CAPACITY) {
+            journeys[i].passengers += numTickets;
+
+            // Calculate the total price
+            double totalPrice = numTickets * TICKET_PRICE;
+            
+            // Apply group discount if applicable
+            int groups = numTickets / GROUP_DISCOUNT_THRESHOLD;
+            totalPrice -= groups * TICKET_PRICE;
+
+            journeys[i].revenue += totalPrice;
+
+            std::cout << "Tickets purchased successfully. Total cost: $" << totalPrice << "\n\n";
+        } else {
+            std::cout << "Train is closed. No more tickets available for this journey.\n\n";
+        }
+
+        totalPassengers += journeys[i].passengers;
+        totalRevenue += journeys[i].revenue;
+    }
+
+    std::cout << "Tickets purchased for the day.\n\n";
+}
+
+void endOfDayReport(const TrainJourney journeys[]) {
+    std::cout << "Electric Mountain Railway - End of the Day Report\n\n";
+
+    for (int i = 0; i < 8; ++i) {
+        std::cout << "Journey at " << (i % 4 + 9) << ":00 - Passengers: " << journeys[i].passengers
+                  << ", Revenue: $" << journeys[i].revenue << "\n";
+    }
+
+    std::cout << "\nTotal Passengers for the day: " << totalPassengers << "\n";
+    std::cout << "Total Revenue for the day: $" << totalRevenue << "\n";
+
+    // Find and display the train journey with the most passengers
+    int maxPassengersIndex = 0;
+    for (int i = 1; i < 8; ++i) {
+        if (journeys[i].passengers > journeys[maxPassengersIndex].passengers) {
+            maxPassengersIndex = i;
+        }
+    }
+
+    std::cout << "Train journey with the most passengers: " << (maxPassengersIndex % 4 + 9) << ":00\n";
+}
