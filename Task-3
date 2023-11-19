@@ -1,0 +1,73 @@
+#include <iostream>
+using namespace std;
+const int ROWS = 3; 
+const int COLS = 5; 
+
+
+void costSlab1(const int matrix[][COLS], int studentID) {
+    cout << "Student ID: " << studentID << endl;
+    int totalCost = 0;
+    
+    for (int i = 0; i < COLS; ++i) {
+        totalCost += matrix[0][i] * 10;
+    }
+
+    cout << "Bill for Slab 1 (0-100 units): Rs." << totalCost << endl;
+}
+
+void costSlab2(const int matrix[][COLS], int studentID) {
+    cout << "Student ID: " << studentID << endl;
+    int totalCost = 0;
+
+    for (int i = 0; i < COLS; ++i) {
+        totalCost += matrix[1][i] * 15;
+    }
+
+    cout << "Bill for Slab 2 (101-200 units): Rs." << totalCost << endl;
+}
+
+void costSlab3(const int matrix[][COLS], int studentID) {
+    cout << "Student ID: " << studentID << endl;
+    int totalCost = 0;
+
+    for (int i = 0; i < COLS; ++i) {
+        totalCost += matrix[2][i] * 20;
+    }
+
+    cout << "Bill for Slab 3 (201-300 units): Rs." << totalCost << endl;
+}
+
+int main() {
+    int studentID = 123; 
+
+    int matrix[ROWS][COLS] = {
+        {100, 200, 300, 400, 500}, 
+        {150, 250, 350, 450, 550}, 
+        {200, 300, 400, 500, 600}  
+    };
+
+    char choice;
+    do {
+        cout << "1. Display bill for Slab 1\n";
+        cout << "2. Display bill for Slab 2\n";
+        cout << "3. Display bill for Slab 3\n";
+        cout << "Press any other key to exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case '1':
+                costSlab1(matrix, studentID);              
+                break;
+            case '2':
+                costSlab2(matrix, studentID);
+                break;
+            case '3':
+               costSlab3(matrix, studentID);
+            default:
+                cout << "Exiting program.\n";
+        }
+    } while (choice == '1' || choice == '2');
+
+    return 0;
+}
