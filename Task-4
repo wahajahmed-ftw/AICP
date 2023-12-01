@@ -1,0 +1,88 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+class Hexagon {
+private:
+    double sideLength;
+
+public:
+    Hexagon(double length) : sideLength(length) {}
+
+    double calcArea() {
+        return 1.5 * 1.732 * sideLength;
+    }
+
+    double calcPeri() {
+        return 6 * sideLength;
+    }
+
+    double calcAngleSum() {
+        return 6 * 120;
+    }
+
+    void display() {
+        cout << "Hexagon:" << endl;
+        cout << "Area: " << calcArea() << endl;
+        cout << "Perimeter: " << calcPeri() << endl;
+        cout << "Sum of Angles: " << calcAngleSum() << endl;
+    }
+};
+
+class Square {
+private:
+    double sideLength;
+
+public:
+    Square(double length) : sideLength(length) {}
+
+    double calcArea() {
+        return sideLength * sideLength;
+    }
+
+    double calcPeri() {
+        return 4 * sideLength;
+    }
+
+    void display() {
+        cout << "Square:" << endl;
+        cout << "Area: " << calcArea() << endl;
+        cout << "Perimeter: " << calcPeri() << endl;
+    }
+};
+
+int main() {
+    char cnicLastDigit;
+    cout << "Enter the last digit of your CNIC: ";
+    cin >> cnicLastDigit;
+
+    double hexagonSideLength = cnicLastDigit - '0';
+    double squareSideLength = hexagonSideLength + 1;
+
+    Hexagon hexagon(hexagonSideLength);
+    Square square(squareSideLength);
+
+    while (true) {
+        cout << "\nMenu:" << endl;
+        cout << "1. Hexagon" << endl;
+        cout << "2. Square" << endl;
+        cout << "Any other input to exit" << endl;
+
+        char choice;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case '1':
+                hexagon.display();
+                break;
+            case '2':
+                square.display();
+                break;
+            default:
+                cout << "Exiting program." << endl;
+                return 0;
+        }
+    }
+
+    return 0;
+}
