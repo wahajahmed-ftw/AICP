@@ -1,0 +1,112 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+// Constants
+const int NUM_CHARITIES = 3;
+
+// Function prototypes
+void setupDonationSystem(std::vector<std::string>& charityNames, double& total1, double& total2, double& total3);
+void recordAndTotalDonation(std::vector<std::string>& charityNames, double& total1, double& total2, double& total3);
+void showTotals(const std::vector<std::string>& charityNames, double total1, double total2, double total3);
+
+int main() {
+    // Variables for task 1
+    std::vector<std::string> charityNames;
+    double total1 = 0.0, total2 = 0.0, total3 = 0.0;
+
+    // Task 1
+    setupDonationSystem(charityNames, total1, total2, total3);
+
+    // Task 2
+    recordAndTotalDonation(charityNames, total1, total2, total3);
+
+    // Task 3
+    showTotals(charityNames, total1, total2, total3);
+
+    return 0;
+}
+
+void setupDonationSystem(std::vector<std::string>& charityNames, double& total1, double& total2, double& total3) {
+    // Input charity names
+    for (int i = 0; i < NUM_CHARITIES; ++i) {
+        std::string charityName;
+        std::cout << "Enter the name of charity " << i + 1 << ": ";
+        std::cin >> charityName;
+        charityNames.push_back(charityName);
+    }
+
+    // Display charity names with numbers
+    std::cout << "\nCharity Options:\n";
+    for (int i = 0; i < NUM_CHARITIES; ++i) {
+        std::cout << i + 1 << ". " << charityNames[i] << std::endl;
+    }
+
+    // Initialize totals to zero
+    total1 = total2 = total3 = 0.0;
+}
+
+void recordAndTotalDonation(std::vector<std::string>& charityNames, double& total1, double& total2, double& total3) {
+    int choice;
+    double shoppingBill;
+
+    // Input donation details
+    std::cout << "\nEnter the charity choice (1, 2, 3) or -1 to show totals: ";
+    std::cin >> choice;
+
+    while (choice != -1) {
+        if (choice >= 1 && choice <= NUM_CHARITIES) {
+            std::cout << "Enter the shopping bill amount: $";
+            std::cin >> shoppingBill;
+
+            // Calculate and update totals
+            switch (choice) {
+                case 1:
+                    total1 += 0.01 * shoppingBill;
+                    break;
+                case 2:
+                    total2 += 0.01 * shoppingBill;
+                    break;
+                case 3:
+                    total3 += 0.01 * shoppingBill;
+                    break;
+                default:
+                    break;
+            }
+
+            // Output donation details
+            std::cout << "Donated $" << std::fixed << std::setprecision(2) << 0.01 * shoppingBill
+                      << " to " << charityNames[choice - 1] << std::endl;
+        } else {
+            std::cout << "Invalid choice. Please enter 1, 2, 3, or -1." << std::endl;
+        }
+
+        // Input the next donation choice
+        std::cout << "\nEnter the charity choice (1, 2, 3) or -1 to show totals: ";
+        std::cin >> choice;
+    }
+}
+
+void showTotals(const std::vector<std::string>& charityNames, double total1, double total2, double total3) {
+    // Output totals in descending order
+    std::vector<std::pair<std::string, double>> totals;
+    totals.push_back(std::make_pair(charityNames[0], total1));
+    totals.push_back(std::make_pair(charityNames[1], total2));
+    totals.push_back(std::make_pair(charityNames[2], total3));
+
+    std::sort(totals.begin(), totals.end(), [](const auto& lhs, const auto& rhs) {
+        return lhs.second > rhs.second;
+    });
+
+    // Output totals
+    std::cout << "\nCharity Totals:\n";
+    for (const auto& pair : totals) {
+        std::cout << pair.first << ": $" << std::fixed << std::setprecision(2) << pair.second << std::endl;
+    }
+
+    // Calculate and output grand total
+    double grandTotal = total1 + total2 + total3;
+    std::cout << "\nGRAND TOTAL DONATED TO CHARITY: $" << std::fixed << std::setprecision(2) << grandTotal << std::endl;
+}
