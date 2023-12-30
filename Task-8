@@ -1,0 +1,119 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <ctime>
+
+// Constants
+const int NUM_BOATS = 10;
+const int OPENING_HOUR = 10;
+const int CLOSING_HOUR = 17;
+const double HOURLY_RATE = 20.0;
+const double HALF_HOUR_RATE = 12.0;
+
+// Boat structure to store boat information
+struct Boat {
+    bool isAvailable;
+    double moneyTaken;
+    double totalHoursHired;
+    int returnTime;
+};
+
+// Function prototypes
+void calculateDailyProfits(Boat& boat, int currentTime);
+void findNextAvailableBoat(const std::vector<Boat>& boats, int currentTime);
+void calculateTotalProfits(const std::vector<Boat>& boats);
+
+int main() {
+    // Initialize boats
+    std::vector<Boat> boats(NUM_BOATS, {true, 0.0, 0.0, OPENING_HOUR});
+
+    // Set the seed for randomization (used to simulate different hire times during testing)
+    std::srand(std::time(0));
+
+    // Simulate boat hires for testing
+    for (int i = 0; i < NUM_BOATS; ++i) {
+        // Simulate boats being hired at random times within the working hours
+        int currentTime = OPENING_HOUR + std::rand() % (CLOSING_HOUR - OPENING_HOUR);
+        calculateDailyProfits(boats[i], currentTime);
+    }
+
+    // Task 2
+    int currentTime = OPENING_HOUR + std::rand() % (CLOSING_HOUR - OPENING_HOUR);
+    findNextAvailableBoat(boats, currentTime);
+
+    // Task 3
+    calculateTotalProfits(boats);
+
+    return 0;
+}
+
+void calculateDailyProfits(Boat& boat, int currentTime) {
+    if (currentTime < OPENING_HOUR || currentTime >= CLOSING_HOUR) {
+        std::cout << "Boat cannot be hired at this time." << std::endl;
+        return;
+    }
+
+    double hireDuration;
+    std::cout << "Enter the duration for boat " << (&boat - &boats[0]) + 1 << " in hours: ";
+    std::cin >> hireDuration;
+
+    if (hireDuration > 0 && (currentTime + hireDuration) <= CLOSING_HOUR) {
+        boat.isAvailable = false;
+        boat.moneyTaken += (hireDuration <= 0.5) ? HALF_HOUR_RATE : HOURLY_RATE * hireDuration;
+        boat.totalHoursHired += hireDuration;
+        boat.returnTime = currentTime + hireDuration;
+
+        std::cout << "Boat " << (&boat - &boats[0]) + 1 << " hired for " << hireDuration << " hours."
+                  << " Return time: " << boat.returnTime << ":00" << std::endl;
+    } else {
+        std::cout << "Invalid hire duration or return time exceeds closing hours." << std::endl;
+    }
+}
+
+void findNextAvailableBoat(const std::vector<Boat>& boats, int currentTime) {
+    int earliestAvailableTime = CLOSING_HOUR;
+
+    for (const Boat& boat : boats) {
+        if (boat.isAvailable) {
+            std::cout << "Boat " << (&boat - &boats[0]) + 1 << " is available." << std::endl;
+        } else {
+            earliestAvailableTime = std::min(earliestAvailableTime, boat.returnTime);
+        }
+    }
+
+    if (earliestAvailableTime < CLOSING_HOUR) {
+        std::cout << "No boats available. Next boat will be available at " << earliestAvailableTime << ":00." << std::endl;
+    }
+}
+
+void calculateTotalProfits(const std::vector<Boat>& boats) {
+    double totalMoneyTaken = 0.0;
+    double totalHoursHired = 0.0;
+    int unusedBoats = 0;
+    int mostUsedBoat = -1;
+    double maxHoursHired = 0.0;
+
+    for (const Boat& boat : boats) {
+        totalMoneyTaken += boat.moneyTaken;
+        totalHoursHired += boat.totalHoursHired;
+
+        if (boat.isAvailable) {
+            unusedBoats++;
+        } else if (boat.totalHoursHired > maxHoursHired) {
+            mostUsedBoat = (&boat - &boats[0]) + 1;
+            maxHoursHired = boat.totalHoursHired;
+        }
+    }
+
+    // Output daily report
+    std::cout << "\nDaily Report:\n";
+    std::cout << "Total money taken: $" << std::fixed << std::setprecision(2) << totalMoneyTaken << std::endl;
+    std::cout << "Total hours hired: " << totalHoursHired << " hours" << std::endl;
+    std::cout << "Number of boats not used: " << unusedBoats << std::endl;
+
+    if (mostUsedBoat != -1) {
+        std::cout << "Boat " << mostUsedBoat << " was used the most, hired for " << maxHoursHired << " hours." << std::endl;
+    } else {
+        std::cout << "No boats were used today." << std::endl;
+    }
+}
